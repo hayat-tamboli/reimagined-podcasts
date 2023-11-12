@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
-const XI_API_KEY = 'a2694449f1559193a0f3c5addf1e48c6'
+const XI_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY
 const HAYAT_VOICE_ID = '2WWfkCAM5iPXFUZIkThb'
 const YASH_VOICE_ID = 'ecNbgYOckYI8JER9009p'
 type Voice = 'hayat' | 'yash'
