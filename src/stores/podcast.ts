@@ -8,7 +8,7 @@ export const usePodcastStore = defineStore('PodcastStore', {
     topic: '',
     speaker_1: '',
     speaker_2: '',
-    blobURLs: [],
+    blobURLs: [] as string[],
     messages: [] as Chats,
   }),
   actions: {
@@ -24,9 +24,14 @@ export const usePodcastStore = defineStore('PodcastStore', {
         await openAIStore.hayatSpitsText()
         this.messages.push({speaker: 'hayat', message: openAIStore.response})
         await voiceStore.generateVoice({speaker: 'hayat', message: openAIStore.response})
+        this.blobURLs.push(voiceStore.responseURL)
+        await new Audio(voiceStore.responseURL).play()
+        // --------------------------------
         await openAIStore.yashSpitsText()
         this.messages.push({speaker: 'yash', message: openAIStore.response})
         await voiceStore.generateVoice({speaker: 'yash', message: openAIStore.response})
+        this.blobURLs.push(voiceStore.responseURL)
+        await new Audio(voiceStore.responseURL).play()
       }
       console.table(this.messages)
     },
