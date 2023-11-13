@@ -1,14 +1,11 @@
+import type { Chat } from '@/models/chat'
 import axios from 'axios'
 import { defineStore } from 'pinia'
+
 const XI_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY
 const HAYAT_VOICE_ID = '2WWfkCAM5iPXFUZIkThb'
 const YASH_VOICE_ID = 'ecNbgYOckYI8JER9009p'
-type Voice = 'hayat' | 'yash'
-interface ElevenLabsParams {
-  textToConvert?: string
-  voice_of: Voice
-  istest?: boolean
-}
+
 
 export const useVoiceStore = defineStore('elevenLabsUtils', {
   state: () => ({
@@ -17,13 +14,13 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
   }),
 
   actions: {
-    async generateVoice({ textToConvert, voice_of, istest = false}: ElevenLabsParams) {
+    async generateVoice(chat: Chat, istest?: boolean) {
       const apiKey = XI_API_KEY
       let voiceID
-      if (voice_of == 'hayat') voiceID = HAYAT_VOICE_ID
-      if (voice_of == 'yash') voiceID = YASH_VOICE_ID
+      if (chat.speaker == 'hayat') voiceID = HAYAT_VOICE_ID
+      if (chat.speaker == 'yash') voiceID = YASH_VOICE_ID
       if (istest)
-        textToConvert =
+        chat.message =
           "आज का टॉपिक है tech और mental health; so मैं ही पहले start करता हु; so let's come to tech;"
 
       // API request options
@@ -36,7 +33,7 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
           'xi-api-key': apiKey
         },
         data: {
-          text: textToConvert,
+          text: chat.message,
           model_id: 'eleven_multilingual_v2'
         },
         responseType: 'arraybuffer' // To receive binary data in response

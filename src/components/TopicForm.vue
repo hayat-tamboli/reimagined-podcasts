@@ -24,8 +24,8 @@ function submitTopic(topic = 'Technology and physical health', start_by = 'hayat
     </audio> -->
       <div class="p-4 w-full">
         <form @submit.prevent="submitTopic(topic)" class="flex flex-col justify-center">
-          <it-input class="text-xl placeholder:text-xl" v-model="topic" placeholder="Topic for the podcast"/>
-          <it-button class="mt-6 text-xl" type="submit" variant="primary" size="big" :loading = "btnLoading" >Generate Podcast</it-button>
+          <it-input class="text-xl placeholder:text-xl" v-model="topic" placeholder="Topic for the podcast" required/>
+          <it-button class="mt-6 text-xl" type="submit" variant="primary" size="big" :loading = "btnLoading" style="font-family: 'Syne', sans-serif;" >Generate Podcast</it-button>
         </form>
       </div>
     </div>
