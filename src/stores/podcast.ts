@@ -3,6 +3,8 @@ import { useVoiceStore } from '@/stores/elevenLabsUtils'
 import { useAIStore } from '@/stores/openaiUtils'
 import type { Chats } from '@/models/chat'
 
+type Animation = 'idle' | 'speaking'
+
 export const usePodcastStore = defineStore('PodcastStore', {
   state: () => ({
     topic: '',
@@ -10,6 +12,9 @@ export const usePodcastStore = defineStore('PodcastStore', {
     speaker_2: '',
     blobURLs: [] as string[],
     messages: [] as Chats,
+    chatComplete: false,
+    hayatAnim: 'idle' as Animation,
+    yashAnim: 'idle' as Animation
   }),
   actions: {
     setSpeaker({ speaker_1 = 'hayat', speaker_2 = 'yash' }) {
@@ -20,27 +25,31 @@ export const usePodcastStore = defineStore('PodcastStore', {
       const openAIStore = useAIStore()
       const voiceStore = useVoiceStore()
       openAIStore.startPodcastByHayat(this.topic)
-      for(let i = 0; i<2;i++){
-        await openAIStore.hayatSpitsText()
-        this.messages.push({speaker: 'hayat', message: openAIStore.response})
-        await voiceStore.generateVoice({speaker: 'hayat', message: openAIStore.response})
-        this.blobURLs.push(voiceStore.responseURL)
-        await new Audio(voiceStore.responseURL).play()
+      for (let i = 0; i < 1; i++) {
+        await openAIStore.hayatSpitsText().then((res) => {
+          this.messages.push({ speaker: 'hayat', message: res })
+          // voiceStore.generateVoice({ speaker: 'yash', message: res }).then((url) => {
+          //   this.blobURLs.push(url)
+          // })
+        })
         // --------------------------------
-        await openAIStore.yashSpitsText()
-        this.messages.push({speaker: 'yash', message: openAIStore.response})
-        await voiceStore.generateVoice({speaker: 'yash', message: openAIStore.response})
-        this.blobURLs.push(voiceStore.responseURL)
-        await new Audio(voiceStore.responseURL).play()
+        await openAIStore.yashSpitsText().then((res) => {
+          this.messages.push({ speaker: 'yash', message: res })
+          // voiceStore.generateVoice({ speaker: 'yash', message: res }).then((url) => {
+          //   this.blobURLs.push(url)
+          // })
+        })
       }
       console.table(this.messages)
     },
+
     async generateFullVoiceContent() {
       const voiceStore = useVoiceStore()
-      for(let i = 0;i<this.messages.length; i++)
-      {
+      for (let i = 0; i < this.messages.length; i++) {
         await voiceStore.generateVoice(this.messages[i])
       }
-    }
+    },
+
+    
   }
 })

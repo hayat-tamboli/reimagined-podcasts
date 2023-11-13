@@ -48,6 +48,7 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
       // Create a URL for the audio blob
       this.responseURL = URL.createObjectURL(audioBlob)
       console.log(this.responseURL)
+      return this.responseURL
     },
     async getModels() {
       const apiRequestOptions: any = {

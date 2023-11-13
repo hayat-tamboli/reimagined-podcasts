@@ -12,6 +12,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@rive-app/canvas": "^2.7.3",
     "axios": "^1.6.1",
     "equal-vue": "^0.93.0",
     "openai": "^4.17.4",

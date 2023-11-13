@@ -54,11 +54,13 @@ export const useAIStore = defineStore('openAIInternal', {
       this.response = await abstractedTextGeneration(this.hayatContext)
       this.hayatContext.push({role: 'assistant', content: this.response})
       this.yashContext.push({role: 'user', content: this.response})
+      return this.response
     },
     async yashSpitsText() {
       this.response = await abstractedTextGeneration(this.yashContext)
       this.yashContext.push({role: 'assistant', content: this.response})
       this.hayatContext.push({role: 'user', content: this.response})
+      return this.response
     }
   }
 })

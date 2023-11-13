@@ -7,12 +7,16 @@ let topic = ref('')
 let btnLoading = ref(false)
 
 function submitTopic(topic = 'Technology and physical health', start_by = 'hayat') {
+  podcastStore.$reset
   btnLoading.value = true
   podcastStore.topic = topic
   podcastStore.speaker_1 = start_by
   podcastStore.setSpeaker({})
   podcastStore.generateTextContent().then(() => {
     btnLoading.value = false
+    podcastStore.chatComplete = true
+    podcastStore.hayatAnim = 'speaking'
+    
   })
 }
 </script>
