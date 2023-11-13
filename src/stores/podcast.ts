@@ -8,28 +8,31 @@ type Animation = 'idle' | 'speaking'
 export const usePodcastStore = defineStore('PodcastStore', {
   state: () => ({
     topic: '',
-    speaker_1: '',
-    speaker_2: '',
     blobURLs: [] as string[],
     messages: [] as Chats,
     chatComplete: false,
+    voiceComplete: false,
     hayatAnim: 'idle' as Animation,
     yashAnim: 'idle' as Animation
   }),
   actions: {
-    setSpeaker({ speaker_1 = 'hayat', speaker_2 = 'yash' }) {
-      this.speaker_1 = speaker_1
-      this.speaker_2 = speaker_2
+    checkVoiceCompletion() {
+      console.log("checking voice completion")
+      if (this.blobURLs.length == this.messages.length) {
+        console.log("voice is all loaded now")
+        this.voiceComplete = true
+      }
     },
     async generateTextContent() {
       const openAIStore = useAIStore()
-      const voiceStore = useVoiceStore()
+      // const voiceStore = useVoiceStore()
       openAIStore.startPodcastByHayat(this.topic)
       for (let i = 0; i < 1; i++) {
         await openAIStore.hayatSpitsText().then((res) => {
           this.messages.push({ speaker: 'hayat', message: res })
-          // voiceStore.generateVoice({ speaker: 'yash', message: res }).then((url) => {
+          // voiceStore.generateVoice({ speaker: 'hayat', message: res }).then((url) => {
           //   this.blobURLs.push(url)
+          //   this.checkVoiceCompletion()
           // })
         })
         // --------------------------------
@@ -37,19 +40,22 @@ export const usePodcastStore = defineStore('PodcastStore', {
           this.messages.push({ speaker: 'yash', message: res })
           // voiceStore.generateVoice({ speaker: 'yash', message: res }).then((url) => {
           //   this.blobURLs.push(url)
+          //   this.checkVoiceCompletion()
           // })
         })
       }
+      console.info('Text Content completed')
       console.table(this.messages)
     },
 
     async generateFullVoiceContent() {
       const voiceStore = useVoiceStore()
       for (let i = 0; i < this.messages.length; i++) {
-        await voiceStore.generateVoice(this.messages[i])
+        await voiceStore.generateVoice(this.messages[i]).then((url) => {
+          this.blobURLs[i] = url
+        })
       }
-    },
-
-    
+      this.checkVoiceCompletion()
+    }
   }
 })

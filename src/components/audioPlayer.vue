@@ -1,38 +1,56 @@
 <template>
-    <div>
-      <audio ref="audioPlayer" controls></audio>
-      <button @click="playAll">Play All</button>
-    </div>
-  </template>
-  
-  <script lang="ts">
-  export default {
-    data() {
-      return {
-        blobUrls: [/* your blob URLs here */],
-      };
+  <div>
+    <audio ref="audioPlayerC" autoplay @ended="playNext"></audio>
+    <it-button @click="playAll" class="m-2">Play podcast again</it-button>
+  </div>
+</template>
+
+<script lang="ts">
+import { usePodcastStore } from '@/stores/podcast'
+
+export default {
+  props: ['blobUrls'],
+  data() {
+    return {
+      currentIndex: 0
+    }
+  },
+  mounted() {
+    this.playAll()
+  },
+  methods: {
+    playAll() {
+      const podcastStore = usePodcastStore()
+      podcastStore.hayatAnim = 'speaking'
+      podcastStore.yashAnim = 'idle'
+      this.currentIndex = 0
+      this.playCurrent()
     },
-    methods: {
-      playAll() {
-        const audioPlayer :any = this.$refs.audioPlayer;
-  
-        // Clear any existing sources
-        while (audioPlayer.firstChild) {
-          audioPlayer.removeChild(audioPlayer.firstChild);
-        }
-  
-        // Create and append audio sources
-        this.blobUrls.forEach((blobUrl) => {
-          const source = document.createElement('source');
-          source.src = blobUrl;
-          audioPlayer.appendChild(source);
-        });
-  
-        // Load and play the audio
-        audioPlayer.load();
-        audioPlayer.play();
-      },
+    
+    playCurrent() {
+      const audioPlayer: any = this.$refs.audioPlayerC
+      audioPlayer.src = this.blobUrls[this.currentIndex]
+      audioPlayer.load()
+      audioPlayer.play()
     },
-  };
-  </script>
-  
+    playNext() {
+      const podcastStore = usePodcastStore()
+      this.currentIndex++
+      if (this.currentIndex < this.blobUrls.length) {
+        if (this.currentIndex / 2 != 0) {
+        podcastStore.hayatAnim = 'idle'
+        podcastStore.yashAnim = 'speaking'
+      } else {
+        podcastStore.hayatAnim = 'speaking'
+        podcastStore.yashAnim = 'idle'
+      }
+        this.playCurrent()
+      }
+      else{
+        podcastStore.hayatAnim = 'idle'
+        podcastStore.yashAnim = 'idle'
+      }
+    },
+  }
+}
+</script>

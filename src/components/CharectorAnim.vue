@@ -9,7 +9,7 @@ import { defineComponent } from 'vue'
 import { Rive } from '@rive-app/canvas'
 
 export default defineComponent({
-  name: 'HayatRive',
+  name: 'CharectorRive',
   props: {
     src: String,
     animation: String

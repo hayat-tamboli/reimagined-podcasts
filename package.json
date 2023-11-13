@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@rive-app/canvas": "^2.7.3",
+    "audioconcat": "^0.1.4",
     "axios": "^1.6.1",
     "equal-vue": "^0.93.0",
     "openai": "^4.17.4",
