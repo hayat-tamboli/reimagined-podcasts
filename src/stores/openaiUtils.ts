@@ -16,7 +16,7 @@ async function TextGenerationHayat(context: Messages) {
     model: 'ft:gpt-3.5-turbo-1106:hayat::8Kmv9FCf',
     messages: context,
     temperature: 0.7,
-    max_tokens: 1024,
+    max_tokens: 512,
     top_p: 1,
     frequency_penalty: 0.3,
     presence_penalty: 0.2,
@@ -27,10 +27,10 @@ async function TextGenerationHayat(context: Messages) {
 }
 async function TextGenerationYash(context: Messages) {
   const completion = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo-1106',
+    model: 'ft:gpt-3.5-turbo-1106:hayat::8KpEL3vk',
     messages: context,
     temperature: 0.7,
-    max_tokens: 1024,
+    max_tokens: 512,
     top_p: 1,
     frequency_penalty: 0.3,
     presence_penalty: 0.2,

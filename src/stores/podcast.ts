@@ -13,7 +13,8 @@ export const usePodcastStore = defineStore('PodcastStore', {
     chatComplete: false,
     voiceComplete: false,
     hayatAnim: 'idle' as Animation,
-    yashAnim: 'idle' as Animation
+    yashAnim: 'idle' as Animation,
+    blobsLoaded: 0.0
   }),
   actions: {
     checkVoiceCompletion() {
@@ -29,6 +30,7 @@ export const usePodcastStore = defineStore('PodcastStore', {
           if(i == (this.messages.length-1))
           {
             console.log("voice is all loaded now")
+            this.blobsLoaded = 100
             this.voiceComplete = true
           }
         }
@@ -38,13 +40,15 @@ export const usePodcastStore = defineStore('PodcastStore', {
       const openAIStore = useAIStore()
       const voiceStore = useVoiceStore()
       openAIStore.startPodcastByHayat(this.topic)
-      for (let i = 0; i < 1; i++) {
+      const total_chats = 3
+      for (let i = 0; i < total_chats; i++) {
         await openAIStore.hayatSpitsText().then((res) => {
           this.messages.push({ speaker: 'hayat', message: res })
           voiceStore.generateVoice({ speaker: 'hayat', message: res }).then((url) => {
             // this.blobURLs.push(url)
             this.blobURLs[(i*2)] = url
             console.log(url + "added to position" + String((i*2)))
+            this.blobsLoaded += (100/(total_chats*2))
             this.checkVoiceCompletion()
           })
         })
@@ -55,6 +59,7 @@ export const usePodcastStore = defineStore('PodcastStore', {
             // this.blobURLs.push(url)
             this.blobURLs[((i*2)+1)] = url
             console.log(url + "added to position" + String((i*2)+1))
+            this.blobsLoaded += (100/(total_chats*2))
             this.checkVoiceCompletion()
           })
         })
