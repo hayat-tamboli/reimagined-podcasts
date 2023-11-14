@@ -19,33 +19,49 @@ export const usePodcastStore = defineStore('PodcastStore', {
     checkVoiceCompletion() {
       console.log("checking voice completion")
       if (this.blobURLs.length == this.messages.length) {
-        console.log("voice is all loaded now")
-        this.voiceComplete = true
+        for(let i = 0; i<this.messages.length; i++)
+        {
+          console.log(this.blobURLs[i])
+          if(this.blobURLs[i] == null)
+          {
+            break
+          }
+          if(i == (this.messages.length-1))
+          {
+            console.log("voice is all loaded now")
+            this.voiceComplete = true
+          }
+        }
       }
     },
     async generateTextContent() {
       const openAIStore = useAIStore()
-      // const voiceStore = useVoiceStore()
+      const voiceStore = useVoiceStore()
       openAIStore.startPodcastByHayat(this.topic)
       for (let i = 0; i < 1; i++) {
         await openAIStore.hayatSpitsText().then((res) => {
           this.messages.push({ speaker: 'hayat', message: res })
-          // voiceStore.generateVoice({ speaker: 'hayat', message: res }).then((url) => {
-          //   this.blobURLs.push(url)
-          //   this.checkVoiceCompletion()
-          // })
+          voiceStore.generateVoice({ speaker: 'hayat', message: res }).then((url) => {
+            // this.blobURLs.push(url)
+            this.blobURLs[(i*2)] = url
+            console.log(url + "added to position" + String((i*2)))
+            this.checkVoiceCompletion()
+          })
         })
         // --------------------------------
         await openAIStore.yashSpitsText().then((res) => {
           this.messages.push({ speaker: 'yash', message: res })
-          // voiceStore.generateVoice({ speaker: 'yash', message: res }).then((url) => {
-          //   this.blobURLs.push(url)
-          //   this.checkVoiceCompletion()
-          // })
+          voiceStore.generateVoice({ speaker: 'yash', message: res }).then((url) => {
+            // this.blobURLs.push(url)
+            this.blobURLs[((i*2)+1)] = url
+            console.log(url + "added to position" + String((i*2)+1))
+            this.checkVoiceCompletion()
+          })
         })
       }
       console.info('Text Content completed')
       console.table(this.messages)
+      this.checkVoiceCompletion()
     },
 
     async generateFullVoiceContent() {

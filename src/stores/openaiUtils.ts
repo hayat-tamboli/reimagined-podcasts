@@ -11,12 +11,26 @@ const openai = new OpenAI({
 
 // const yash_system_content : SystemMessage = { content: 'You are Yash, a simple and clear thinker but a pessimistic and technophobic podcast personality, who is an Indian and chats in pure hindi language' }
 
-async function abstractedTextGeneration(context: Messages) {
+async function TextGenerationHayat(context: Messages) {
   const completion = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
+    model: 'ft:gpt-3.5-turbo-1106:hayat::8Kmv9FCf',
     messages: context,
-    temperature: 1,
-    max_tokens: 256,
+    temperature: 0.7,
+    max_tokens: 1024,
+    top_p: 1,
+    frequency_penalty: 0.3,
+    presence_penalty: 0.2,
+    stop: ['क्या केहना है आपका ?']
+  })
+
+  return String(completion.choices[0].message.content)
+}
+async function TextGenerationYash(context: Messages) {
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo-1106',
+    messages: context,
+    temperature: 0.7,
+    max_tokens: 1024,
     top_p: 1,
     frequency_penalty: 0.3,
     presence_penalty: 0.2,
@@ -32,12 +46,12 @@ export const useAIStore = defineStore('openAIInternal', {
     hayat_system_content: {
       role: 'system',
       content:
-        'You are Hayat, a controversial but optimistic and technophilic podcast personality, who is an Indian and chats in pure hindi language'
+        "You are Hayat, a Masters' student from India, he is a Computer Science engineer and is currently studying Interaction design, He is a rational, humorous, has a neutral, modern and cool way of speaking, is an overthinker, friendly, technophilic, optimistic and intellectual being, who chats in Hindi"
     } as Message,
     yash_system_content: {
       role: 'system',
       content:
-        'You are Hayat, a controversial but optimistic and technophilic podcast personality, who is an Indian and chats in pure hindi language'
+        "Yash is a master's student at IIT Bombay. He learns Interaction design there. He's a mechanical engineer. He's a curious and enthusiastic hardworking boy. Yash is too ambitious but grounded in reality. He's humble and kind. He likes to help people and thinks of growing together. Yash is a technophobic and expresses concern regarding the over engineering and technological growth and its effects on the human future. Yash himself uses technology a lot and sees it as a big futuristic thing. you chat in pure Hindi and use some words of english very rarely"
     } as Message,
     hayatContext: [] as Messages,
     yashContext: [] as Messages,
@@ -51,15 +65,15 @@ export const useAIStore = defineStore('openAIInternal', {
         this.yashContext.push({role: 'user', content: `आज का टॉपिक ऑफ़ डिस्कशन है ${topic}, क्या राय है आपकी इस बारे में ।`})
     },
     async hayatSpitsText() {
-      this.response = await abstractedTextGeneration(this.hayatContext)
+      this.response = await TextGenerationHayat(this.hayatContext)
       this.hayatContext.push({role: 'assistant', content: this.response})
       this.yashContext.push({role: 'user', content: this.response})
       return this.response
     },
     async yashSpitsText() {
-      this.response = await abstractedTextGeneration(this.yashContext)
-      this.yashContext.push({role: 'assistant', content: this.response})
+      this.response = await TextGenerationYash(this.yashContext)
       this.hayatContext.push({role: 'user', content: this.response})
+      this.yashContext.push({role: 'assistant', content: this.response})
       return this.response
     }
   }

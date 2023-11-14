@@ -1,7 +1,9 @@
 <template>
   <div>
-    <audio ref="audioPlayerC" autoplay @ended="playNext"></audio>
-    <it-button @click="playAll" class="m-2">Play podcast again</it-button>
+    <audio ref="audioPlayerC" autoplay @ended="playNext" ></audio>
+    <it-button @click="playAll" class="m-2">Replay</it-button>
+    <it-button @click="playAll" class="m-2">Pause</it-button>
+    <it-button @click="playAll" class="m-2">Play</it-button>
   </div>
 </template>
 
@@ -19,6 +21,10 @@ export default {
     this.playAll()
   },
   methods: {
+    Pause() {
+      const audioPlayer: any = this.$refs.audioPlayerC
+      audioPlayer.pause()
+    },
     playAll() {
       const podcastStore = usePodcastStore()
       podcastStore.hayatAnim = 'speaking'

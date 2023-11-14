@@ -11,10 +11,11 @@ function submitTopic(topic: string) {
   podcastStore.topic = topic
   podcastStore.generateTextContent().then(() => {
     podcastStore.chatComplete = true
-    podcastStore.generateFullVoiceContent().then(()=>{
       btnLoading.value = false
-      podcastStore.hayatAnim = 'speaking'
-    })
+    // podcastStore.generateFullVoiceContent().then(()=>{
+    //   btnLoading.value = false
+    //   podcastStore.hayatAnim = 'speaking'
+    // })
   })
 }
 </script>
