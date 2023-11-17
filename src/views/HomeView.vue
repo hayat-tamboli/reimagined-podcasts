@@ -10,6 +10,8 @@ import ChatBox from '@/components/ChatBox.vue'
 import AudioPlayer from '@/components/audioPlayer.vue'
 import { usePodcastStore } from '@/stores/podcast'
 const podcastStore = usePodcastStore()
+// import { useVoiceStore } from '@/stores/elevenLabsUtils'
+// const voiceStore = useVoiceStore()
 </script>
 
 <template>
@@ -19,6 +21,9 @@ const podcastStore = usePodcastStore()
       v-show="!podcastStore.chatComplete"
     />
     <ChatBox :podcastStore="podcastStore" />
+    <!-- <audio controls v-show="podcastStore.voiceComplete" >
+      <source :src="voiceStore.combinedResponseURL">
+    </audio> -->
     <div>
       <Transition name="fromRight">
         <CharectorAnimation
@@ -41,18 +46,18 @@ const podcastStore = usePodcastStore()
         <img
           :src="yashComputer"
           alt=""
-          class="w-72 absolute left-72 bottom-40 z-10"
+          class="w-72 absolute left-80   bottom-40 z-10"
           v-show="podcastStore.chatComplete"
         />
       </Transition>
-      <Transition name="fromLeft">
+      <!-- <Transition name="fromLeft">
         <img
           :src="yashBottle"
           alt=""
           class="w-40 absolute left-4 bottom-56 z-10"
           v-show="podcastStore.chatComplete"
         />
-      </Transition>
+      </Transition> -->
       <Transition name="fromRight">
         <img
           :src="hayatComputer"
@@ -61,14 +66,14 @@ const podcastStore = usePodcastStore()
           v-show="podcastStore.chatComplete"
         />
       </Transition>
-      <Transition name="fromRight">
+      <!-- <Transition name="fromRight">
         <img
           :src="hayatBottle"
           alt=""
           class="w-40 absolute right-4 bottom-56 z-10"
           v-show="podcastStore.chatComplete"
         />
-      </Transition>
+      </Transition> -->
       <img :src="tableSVG" alt="" class="w-screen absolute z-0 bottom-0 left-0" />
     </div>
     <Transition name="fromBottom">

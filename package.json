@@ -33,6 +33,7 @@
     "autoprefixer": "^10.4.16",
     "eslint": "^8.49.0",
     "eslint-plugin-vue": "^9.17.0",
+    "libmp3lame.js": "^1.0.2",
     "npm-run-all2": "^6.1.1",
     "postcss": "^8.4.31",
     "prettier": "^3.0.3",

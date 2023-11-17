@@ -11,6 +11,8 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
   state: () => ({
     response: '',
     responseURL: '',
+    arrayBufferArr: [] as string[],
+    combinedResponseURL: '' as string
   }),
 
   actions: {
@@ -42,6 +44,7 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
       // Sending the API request and waiting for response
       const apiResponse = await axios.request(apiRequestOptions)
       this.response = apiResponse.data
+      this.arrayBufferArr.push(this.response)
       //   this.response = await convertTextToAudio(text, voice_of, testing)
       const audioBlob = new Blob([this.response], { type: 'audio/mpeg' })
       console.log(audioBlob)
@@ -49,6 +52,11 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
       this.responseURL = URL.createObjectURL(audioBlob)
       console.log(this.responseURL)
       return this.responseURL
+    },
+    getCombinedAudio() {
+      const audioBlob = new Blob(this.arrayBufferArr, { type: 'audio/mpeg' })
+      this.combinedResponseURL = URL.createObjectURL(audioBlob)
+      return this.combinedResponseURL
     },
     async getModels() {
       const apiRequestOptions: any = {

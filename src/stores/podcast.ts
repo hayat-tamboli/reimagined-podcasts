@@ -29,8 +29,14 @@ export const usePodcastStore = defineStore('PodcastStore', {
           }
           if(i == (this.messages.length-1))
           {
+            if(!this.chatComplete)
+            {
+              return
+            }
             console.log("voice is all loaded now")
             this.blobsLoaded = 100
+            const voiceStore = useVoiceStore()
+            voiceStore.getCombinedAudio()
             this.voiceComplete = true
           }
         }
@@ -40,7 +46,7 @@ export const usePodcastStore = defineStore('PodcastStore', {
       const openAIStore = useAIStore()
       const voiceStore = useVoiceStore()
       openAIStore.startPodcastByHayat(this.topic)
-      const total_chats = 3
+      const total_chats = 2
       for (let i = 0; i < total_chats; i++) {
         await openAIStore.hayatSpitsText().then((res) => {
           this.messages.push({ speaker: 'hayat', message: res })
