@@ -18,8 +18,8 @@ async function TextGenerationHayat(context: Messages) {
     temperature: 0.7,
     max_tokens: 350,
     top_p: 1,
-    frequency_penalty: 0.5,
-    presence_penalty: 0.2,
+    frequency_penalty: 0.7,
+    presence_penalty: 0.7,
     stop: ['क्या केहना है आपका ?', "क्या राय है आपकी?", "क्या सोचा इसके बारे में?"]
   })
   
@@ -34,8 +34,8 @@ async function TextGenerationYash(context: Messages) {
     temperature: 0.7,
     max_tokens: 350,
     top_p: 1,
-    frequency_penalty: 0.5,
-    presence_penalty: 0.2,
+    frequency_penalty: 0.7,
+    presence_penalty: 0.7,
     stop: ['क्या केहना है आपका ?', "क्या राय है आपकी?", "क्या सोचा इसके बारे में?"]
   })
 
