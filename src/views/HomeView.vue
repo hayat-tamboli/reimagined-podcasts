@@ -3,15 +3,11 @@ import TopicForm from '@/components/TopicForm.vue'
 import tableSVG from '@/assets/table.svg'
 import yashComputer from '@/assets/yash/yash-laptop.svg'
 import hayatComputer from '@/assets/hayat/hayat-laptop.svg'
-import yashBottle from '@/assets/yash/bottle.svg'
-import hayatBottle from '@/assets/hayat/bottle.svg'
-import CharectorAnimation from '@/components/CharectorAnim.vue'
+import CharectorAnim from '@/components/CharectorAnim.vue'
 import ChatBox from '@/components/ChatBox.vue'
 import AudioPlayer from '@/components/audioPlayer.vue'
 import { usePodcastStore } from '@/stores/podcast'
 const podcastStore = usePodcastStore()
-// import { useVoiceStore } from '@/stores/elevenLabsUtils'
-// const voiceStore = useVoiceStore()
 </script>
 
 <template>
@@ -21,13 +17,10 @@ const podcastStore = usePodcastStore()
       v-show="!podcastStore.chatComplete"
     />
     <ChatBox :podcastStore="podcastStore" />
-    <!-- <audio controls v-show="podcastStore.voiceComplete" >
-      <source :src="voiceStore.combinedResponseURL">
-    </audio> -->
     <div>
       <Transition name="fromRight">
-        <CharectorAnimation
-          src="src\assets\hayat\hayat_animation.riv"
+        <CharectorAnim
+          src="assets/hayat/hayat_animation.riv"
           class="w-72 absolute right-32 bottom-48 z-0"
           :animation="podcastStore.hayatAnim"
           v-show="podcastStore.chatComplete"
@@ -35,8 +28,8 @@ const podcastStore = usePodcastStore()
       </Transition>
 
       <Transition name="fromLeft">
-        <CharectorAnimation
-          src="src\assets\yash\yash_animation.riv"
+        <CharectorAnim
+          src="assets/yash/yash_animation.riv"
           class="w-72 absolute left-32 bottom-48 z-0"
           :animation="podcastStore.yashAnim"
           v-show="podcastStore.chatComplete"
@@ -50,14 +43,6 @@ const podcastStore = usePodcastStore()
           v-show="podcastStore.chatComplete"
         />
       </Transition>
-      <!-- <Transition name="fromLeft">
-        <img
-          :src="yashBottle"
-          alt=""
-          class="w-40 absolute left-4 bottom-56 z-10"
-          v-show="podcastStore.chatComplete"
-        />
-      </Transition> -->
       <Transition name="fromRight">
         <img
           :src="hayatComputer"
@@ -66,14 +51,6 @@ const podcastStore = usePodcastStore()
           v-show="podcastStore.chatComplete"
         />
       </Transition>
-      <!-- <Transition name="fromRight">
-        <img
-          :src="hayatBottle"
-          alt=""
-          class="w-40 absolute right-4 bottom-56 z-10"
-          v-show="podcastStore.chatComplete"
-        />
-      </Transition> -->
       <img :src="tableSVG" alt="" class="w-screen absolute z-0 bottom-0 left-0" />
     </div>
     <Transition name="fromBottom">

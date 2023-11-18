@@ -7,9 +7,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { Rive } from '@rive-app/canvas'
+// import AIronicalVideo from "../assets/AIronicals intro video.mp4";
+// import HayatAnimationIdle from "../assets/hayat/animation-idle.mp4";
+// import HayatAnimationSpeaking from "../assets/hayat/animation-speaking.mp4";
+// import YashAnimationIdle from "../assets/yash/animation-idle.mp4";
+// import YashAnimationSpeaking from "../assets/yash/animation-speaking.mp4";
 
 export default defineComponent({
-  name: 'CharectorRive',
+  name: 'CharectorAnim',
   props: {
     src: String,
     animation: String

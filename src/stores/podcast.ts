@@ -42,7 +42,11 @@ export const usePodcastStore = defineStore('PodcastStore', {
         }
       }
     },
-    async generateTextContent() {
+    async generateTextContent(test = false) {
+      if(test)
+      {
+        return
+      }
       const openAIStore = useAIStore()
       const voiceStore = useVoiceStore()
       openAIStore.startPodcastByHayat(this.topic)

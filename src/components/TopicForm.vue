@@ -4,18 +4,15 @@ import { usePodcastStore } from '@/stores/podcast'
 const podcastStore = usePodcastStore()
 let topic = ref('')
 let btnLoading = ref(false)
+let isTest = ref(true)
 
 function submitTopic(topic: string) {
   podcastStore.$reset
   btnLoading.value = true
   podcastStore.topic = topic
-  podcastStore.generateTextContent().then(() => {
+  podcastStore.generateTextContent(isTest.value).then(() => {
     podcastStore.chatComplete = true
-      btnLoading.value = false
-    // podcastStore.generateFullVoiceContent().then(()=>{
-    //   btnLoading.value = false
-    //   podcastStore.hayatAnim = 'speaking'
-    // })
+    btnLoading.value = false
   })
 }
 </script>
@@ -29,7 +26,7 @@ function submitTopic(topic: string) {
             class="text-xl placeholder:text-xl"
             v-model="topic"
             placeholder="Topic for the podcast"
-            required
+            :required = !isTest
           />
           <it-button
             class="mt-6 text-xl"
