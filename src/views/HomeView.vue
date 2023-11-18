@@ -20,7 +20,7 @@ const podcastStore = usePodcastStore()
     <div>
       <Transition name="fromRight">
         <CharectorAnim
-          src="assets/hayat/hayat_animation.riv"
+          src="hayat_animation.riv"
           class="w-72 absolute right-32 bottom-48 z-0"
           :animation="podcastStore.hayatAnim"
           v-show="podcastStore.chatComplete"
@@ -29,7 +29,7 @@ const podcastStore = usePodcastStore()
 
       <Transition name="fromLeft">
         <CharectorAnim
-          src="assets/yash/yash_animation.riv"
+          src="yash_animation.riv"
           class="w-72 absolute left-32 bottom-48 z-0"
           :animation="podcastStore.yashAnim"
           v-show="podcastStore.chatComplete"
