@@ -4,7 +4,8 @@ import { usePodcastStore } from '@/stores/podcast'
 const podcastStore = usePodcastStore()
 let topic = ref('')
 let btnLoading = ref(false)
-let isTest = ref(true)
+// TODO: change test back to false before production
+let isTest = ref(false)
 
 function submitTopic(topic: string) {
   podcastStore.$reset

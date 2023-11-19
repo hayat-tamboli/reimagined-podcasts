@@ -1,26 +1,41 @@
 import type { Chat } from '@/models/chat'
-import axios from 'axios'
+import axios, { type AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
 
 const XI_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY
 const HAYAT_VOICE_ID = '2WWfkCAM5iPXFUZIkThb'
 const YASH_VOICE_ID = 'ecNbgYOckYI8JER9009p'
+const TEST_VOICE_1 = 'C9AK6zDFrEtKcEaxUuxq'
+const TEST_VOICE_2 = 'HM3qBuoTewc24lzCcCvw'
 
+const _appendBuffer = function(bufferKaArray: ArrayBuffer[]) {
+  let temp = new Uint8Array(0)
+  for(let i = 0; i<bufferKaArray.length;i++)
+  {
+    temp = new Uint8Array(temp.byteLength + bufferKaArray[i].byteLength)
+  }
+  let pos = 0
+  for(let i = 0; i<bufferKaArray.length;i++)
+  {
+    temp.set(new Uint8Array(bufferKaArray[i],pos))
+    pos += bufferKaArray[i].byteLength
+  }
+  return temp.buffer;
+};
 
 export const useVoiceStore = defineStore('elevenLabsUtils', {
   state: () => ({
-    response: '',
+    response: new Uint8Array(0) as ArrayBuffer,
     responseURL: '',
-    arrayBufferArr: [] as string[],
-    combinedResponseURL: '' as string
+    arrayBufferArr: [] as ArrayBuffer[],
   }),
 
   actions: {
     async generateVoice(chat: Chat, istest?: boolean) {
       const apiKey = XI_API_KEY
       let voiceID
-      if (chat.speaker == 'hayat') voiceID = HAYAT_VOICE_ID
-      if (chat.speaker == 'yash') voiceID = YASH_VOICE_ID
+      if (chat.speaker == 'hayat') voiceID = TEST_VOICE_1
+      if (chat.speaker == 'yash') voiceID = TEST_VOICE_2
       if (istest)
         chat.message =
           "आज का टॉपिक है tech और mental health; so मैं ही पहले start करता हु; so let's come to tech;"
@@ -42,7 +57,15 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
       }
 
       // Sending the API request and waiting for response
-      const apiResponse = await axios.request(apiRequestOptions)
+      const apiResponse : AxiosResponse = await axios.request(apiRequestOptions).then(function (response) : AxiosResponse {
+        console.log("⚠️⚠️⚠️")
+        console.log(response.data);
+        console.log(response.status);
+        console.log(response.statusText);
+        console.log(response.headers);
+        console.log(response.config);
+        return response
+      });
       this.response = apiResponse.data
       this.arrayBufferArr.push(this.response)
       //   this.response = await convertTextToAudio(text, voice_of, testing)
@@ -53,10 +76,10 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
       console.log(this.responseURL)
       return this.responseURL
     },
-    getCombinedAudio() {
-      const audioBlob = new Blob(this.arrayBufferArr, { type: 'audio/mpeg' })
-      this.combinedResponseURL = URL.createObjectURL(audioBlob)
-      return this.combinedResponseURL
+    // return the combined url of audio file
+    getCombinedAudio() :string {
+      const audioBlob = new Blob([_appendBuffer(this.arrayBufferArr)], { type: 'audio/mpeg' })
+      return URL.createObjectURL(audioBlob)
     },
     async getModels() {
       const apiRequestOptions: any = {

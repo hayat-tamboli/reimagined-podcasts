@@ -216,6 +216,13 @@ export default {
         podcastStore.hayatAnim = 'idle'
         podcastStore.yashAnim = 'idle'
       }
+    },
+    downloadPodcast(){
+      const audioPlayer: any = this.$refs.audioPlayerD
+      const podcastStore = usePodcastStore()
+      const comboBlobUrl = podcastStore.completePodcastURI
+      audioPlayer.src = comboBlobUrl
+      audioPlayer.download()
     }
   }
 }
@@ -224,6 +231,7 @@ export default {
 <template>
   <div class="flex">
     <audio ref="audioPlayerC" autoplay @ended="playNext"></audio>
+    <audio ref="audioPlayerD"></audio>
     <button
       @click="PlayPrevious"
       class="m-2 px-6 text-sm font-semibold shadow-sm rounded-md border border-slate-200 text-slate-900 bg-white flex flex-col justify-center items-center"
@@ -268,6 +276,19 @@ export default {
         />
       </svg>
       Next Speaker
+    </button>
+    <button
+      @click="downloadPodcast"
+      class="m-2 px-6 text-sm font-semibold shadow-sm rounded-md border border-slate-200 text-slate-900 bg-white flex flex-col justify-center items-center"
+      type="button"
+    >
+      <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-12">
+        <path
+          d="M3 21V3h18v18H3zM19 5H5v14h14V5zM7 13v-2h6V9h2v2h2v2h-2v2h-2v-2H7zm4 2h2v2h-2v-2zm0-8v2h2V7h-2z"
+          fill="currentColor"
+        />
+      </svg>
+      Download
     </button>
   </div>
 </template>

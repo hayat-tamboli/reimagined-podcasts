@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import TopicForm from '@/components/TopicForm.vue'
 import tableSVG from '@/assets/table.svg'
 import yashComputer from '@/assets/yash/yash-laptop.svg'
@@ -8,6 +9,19 @@ import ChatBox from '@/components/ChatBox.vue'
 import AudioPlayer from '@/components/audioPlayer.vue'
 import { usePodcastStore } from '@/stores/podcast'
 const podcastStore = usePodcastStore()
+let introVideo = ref<any>(null)
+let introVideoELement = introVideo.value
+let voiceC = ref(podcastStore.voiceComplete)
+watch(voiceC, ()=>{
+  console.log("woa this works, video can start from now")
+PlayVideo()
+})
+
+function PlayVideo() {
+  if (introVideoELement) {
+    introVideoELement.play()
+  }
+}
 </script>
 
 <template>
@@ -17,6 +31,10 @@ const podcastStore = usePodcastStore()
       v-show="!podcastStore.chatComplete"
     />
     <ChatBox :podcastStore="podcastStore" />
+    <!-- <video class="z-50 w-full h-full absolute top-0 left-0 object-cover" ref="introVideo" v-show="podcastStore.voiceComplete">
+      <source src="../assets/intro-vid.mp4" type="video/mp4"/>
+      Your browser does not support the video tag.
+    </video> -->
     <div>
       <Transition name="fromRight">
         <CharectorAnim
@@ -39,7 +57,7 @@ const podcastStore = usePodcastStore()
         <img
           :src="yashComputer"
           alt=""
-          class="w-72 absolute left-80   bottom-40 z-10"
+          class="w-72 absolute left-80 bottom-40 z-10"
           v-show="podcastStore.chatComplete"
         />
       </Transition>

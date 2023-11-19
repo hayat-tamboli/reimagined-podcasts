@@ -2,76 +2,68 @@ import { defineStore } from 'pinia'
 import { useVoiceStore } from '@/stores/elevenLabsUtils'
 import { useAIStore } from '@/stores/openaiUtils'
 import type { Chats } from '@/models/chat'
+import type { Voice } from "@/models/speaker";
 
 type Animation = 'idle' | 'speaking'
+
 
 export const usePodcastStore = defineStore('PodcastStore', {
   state: () => ({
     topic: '',
+    total_ping_pongs: 1,
     blobURLs: [] as string[],
     messages: [] as Chats,
     chatComplete: false,
     voiceComplete: false,
     hayatAnim: 'idle' as Animation,
     yashAnim: 'idle' as Animation,
-    blobsLoaded: 0.0
+    completePodcastURI: ''
   }),
   actions: {
     checkVoiceCompletion() {
-      console.log("checking voice completion")
+      console.log('checking voice completion')
       if (this.blobURLs.length == this.messages.length) {
-        for(let i = 0; i<this.messages.length; i++)
-        {
+        for (let i = 0; i < this.messages.length; i++) {
           console.log(this.blobURLs[i])
-          if(this.blobURLs[i] == null)
-          {
+          if (this.blobURLs[i] == null) {
             break
           }
-          if(i == (this.messages.length-1))
-          {
-            if(!this.chatComplete)
-            {
+          if (i == this.messages.length - 1) {
+            if (!this.chatComplete) {
               return
             }
-            console.log("voice is all loaded now")
-            this.blobsLoaded = 100
+            console.log('voice is all loaded now')
             const voiceStore = useVoiceStore()
-            voiceStore.getCombinedAudio()
+            this.completePodcastURI = voiceStore.getCombinedAudio()
             this.voiceComplete = true
           }
         }
       }
     },
+    createSeperateVoice(speaker: Voice, message: string, index: number) {
+      const voiceStore = useVoiceStore()
+      voiceStore.generateVoice({ speaker: speaker, message: message }).then((url) => {
+        this.blobURLs[index] = url
+        console.log(url + 'added to position ' + String(index))
+        this.checkVoiceCompletion()
+      })
+    },
     async generateTextContent(test = false) {
-      if(test)
-      {
+      const openAIStore = useAIStore()
+      if (test) {
         return
       }
-      const openAIStore = useAIStore()
-      const voiceStore = useVoiceStore()
       openAIStore.startPodcastByHayat(this.topic)
-      const total_chats = 2
-      for (let i = 0; i < total_chats; i++) {
+      
+      for (let i = 0; i < this.total_ping_pongs; i++) {
         await openAIStore.hayatSpitsText().then((res) => {
           this.messages.push({ speaker: 'hayat', message: res })
-          voiceStore.generateVoice({ speaker: 'hayat', message: res }).then((url) => {
-            // this.blobURLs.push(url)
-            this.blobURLs[(i*2)] = url
-            console.log(url + "added to position" + String((i*2)))
-            this.blobsLoaded += (100/(total_chats*2))
-            this.checkVoiceCompletion()
-          })
+          this.createSeperateVoice('hayat', res, i*2)
         })
         // --------------------------------
         await openAIStore.yashSpitsText().then((res) => {
           this.messages.push({ speaker: 'yash', message: res })
-          voiceStore.generateVoice({ speaker: 'yash', message: res }).then((url) => {
-            // this.blobURLs.push(url)
-            this.blobURLs[((i*2)+1)] = url
-            console.log(url + "added to position" + String((i*2)+1))
-            this.blobsLoaded += (100/(total_chats*2))
-            this.checkVoiceCompletion()
-          })
+          this.createSeperateVoice('yash', res, i*2 +1)
         })
       }
       console.info('Text Content completed')
