@@ -22,6 +22,9 @@ function PlayVideo() {
     introVideoELement.play()
   }
 }
+function reload(){
+  history.go()
+}
 </script>
 
 <template>
@@ -81,6 +84,9 @@ function PlayVideo() {
           <p class="p-4">
             Topic of discussion: <b>{{ podcastStore.topic }}</b>
           </p>
+          <button type="button" class="rounded-full p-2 hover:bg-slate-600 hover:text-white " @click="reload">
+      <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-6"> <path d="M18 2h-2v2h-2v2h-2v2h-2v2H8v2H6v2H4v2H2v6h6v-2h2v-2h2v-2h2v-2h2v-2h2v-2h2V8h2V6h-2V4h-2V2zm0 8h-2v2h-2v2h-2v2h-2v2H8v-2H6v-2h2v-2h2v-2h2V8h2V6h2v2h2v2zM6 16H4v4h4v-2H6v-2z" fill="currentColor"/> </svg>
+    </button>
         </div>
         <div v-if="!podcastStore.voiceComplete" class="flex justify-center items-center text-3xl">
           <div role="status" class="p-2">

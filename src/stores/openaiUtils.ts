@@ -7,7 +7,7 @@ const HAYAT_FINETUNED_MODEL = 'ft:gpt-3.5-turbo-1106:hayat::8Kmv9FCf'
 const YASH_FINETUNED_MODEL = 'ft:gpt-3.5-turbo-1106:hayat::8KpEL3vk'
 const GPT35 = 'gpt-3.5-turbo'
 const stopSequence = ['क्या केहना है आपका ?', "क्या राय है आपकी?", "क्या सोचा इसके बारे में?"]
-const MAX_TOKENS = 100
+const MAX_TOKENS = 256
 
 const openai = new OpenAI({
   apiKey: api_key,
@@ -19,11 +19,11 @@ async function TextGeneration(context: Messages, model = GPT35) {
   const completion = await openai.chat.completions.create({
     model: model,
     messages: context,
-    temperature: 0.7,
+    temperature: 0.9,
     max_tokens: MAX_TOKENS,
     top_p: 1,
-    frequency_penalty: 0.7,
-    presence_penalty: 0.7,
+    frequency_penalty: 1,
+    presence_penalty: 1,
     stop: stopSequence
   })
 
@@ -57,13 +57,13 @@ export const useAIStore = defineStore('openAIInternal', {
         this.yashContext.push({role: 'user', content: `आज का टॉपिक ऑफ़ डिस्कशन है ${topic}, क्या राय है आपकी इस बारे में ।`})
     },
     async hayatSpitsText() {
-      this.response = await TextGeneration(this.hayatContext)
+      this.response = await TextGeneration(this.hayatContext, HAYAT_FINETUNED_MODEL)
       this.hayatContext.push({role: 'assistant', content: this.response})
       this.yashContext.push({role: 'user', content: this.response})
       return this.response
     },
     async yashSpitsText() {
-      this.response = await TextGeneration(this.yashContext)
+      this.response = await TextGeneration(this.yashContext, YASH_FINETUNED_MODEL)
       this.hayatContext.push({role: 'user', content: this.response})
       this.yashContext.push({role: 'assistant', content: this.response})
       return this.response
