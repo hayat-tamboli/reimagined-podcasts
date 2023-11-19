@@ -35,6 +35,7 @@ export const usePodcastStore = defineStore('PodcastStore', {
             console.log('voice is all loaded now')
             const voiceStore = useVoiceStore()
             this.completePodcastURI = voiceStore.getCombinedAudio()
+            console.log(this.completePodcastURI)
             this.voiceComplete = true
           }
         }

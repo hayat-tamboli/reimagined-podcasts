@@ -14,7 +14,7 @@ let introVideoELement = introVideo.value
 let voiceC = ref(podcastStore.voiceComplete)
 watch(voiceC, ()=>{
   console.log("woa this works, video can start from now")
-PlayVideo()
+  PlayVideo()
 })
 
 function PlayVideo() {

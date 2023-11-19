@@ -5,37 +5,22 @@ import type { Message, Messages } from '@/models/message'
 const api_key = import.meta.env.VITE_OPENAI_API_KEY
 const HAYAT_FINETUNED_MODEL = 'ft:gpt-3.5-turbo-1106:hayat::8Kmv9FCf'
 const YASH_FINETUNED_MODEL = 'ft:gpt-3.5-turbo-1106:hayat::8KpEL3vk'
+const GPT35 = 'gpt-3.5-turbo'
 const stopSequence = ['क्या केहना है आपका ?', "क्या राय है आपकी?", "क्या सोचा इसके बारे में?"]
+const MAX_TOKENS = 100
 
 const openai = new OpenAI({
   apiKey: api_key,
   dangerouslyAllowBrowser: true
 })
 
-async function TextGenerationHayat(context: Messages) {
+async function TextGeneration(context: Messages, model = GPT35) {
   context.push({role: 'system', content: `पूरी chat हिंदी भाषा में होनी चाहिए और आपकी अपनी contorversial और अनोखी राय होनी चाहिए`})
   const completion = await openai.chat.completions.create({
-    // model: HAYAT_FINETUNED_MODEL,
-    model: 'gpt-3.5-turbo-1106',
+    model: model,
     messages: context,
     temperature: 0.7,
-    max_tokens: 200,
-    top_p: 1,
-    frequency_penalty: 0.7,
-    presence_penalty: 0.7,
-    stop: stopSequence
-  })
-  
-  return String(completion.choices[0].message.content)
-}
-async function TextGenerationYash(context: Messages) {
-  context.push({role: 'system', content: `पूरी chat हिंदी भाषा में होनी चाहिए और आपकी अपनी contorversial और अनोखी राय होनी चाहिए`})
-  const completion = await openai.chat.completions.create({
-    // model: YASH_FINETUNED_MODEL,
-    model: 'gpt-3.5-turbo-1106',
-    messages: context,
-    temperature: 0.7,
-    max_tokens: 200,
+    max_tokens: MAX_TOKENS,
     top_p: 1,
     frequency_penalty: 0.7,
     presence_penalty: 0.7,
@@ -72,13 +57,13 @@ export const useAIStore = defineStore('openAIInternal', {
         this.yashContext.push({role: 'user', content: `आज का टॉपिक ऑफ़ डिस्कशन है ${topic}, क्या राय है आपकी इस बारे में ।`})
     },
     async hayatSpitsText() {
-      this.response = await TextGenerationHayat(this.hayatContext)
+      this.response = await TextGeneration(this.hayatContext)
       this.hayatContext.push({role: 'assistant', content: this.response})
       this.yashContext.push({role: 'user', content: this.response})
       return this.response
     },
     async yashSpitsText() {
-      this.response = await TextGenerationYash(this.yashContext)
+      this.response = await TextGeneration(this.yashContext)
       this.hayatContext.push({role: 'user', content: this.response})
       this.yashContext.push({role: 'assistant', content: this.response})
       return this.response

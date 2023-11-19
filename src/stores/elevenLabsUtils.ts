@@ -3,39 +3,65 @@ import axios, { type AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
 
 const XI_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY
-const HAYAT_VOICE_ID = '2WWfkCAM5iPXFUZIkThb'
-const YASH_VOICE_ID = 'ecNbgYOckYI8JER9009p'
+const HAYAT_VOICE_ID = 'Mdp8P6fvVv8ZHDGdZ7cN'
+const YASH_VOICE_ID = 'MiWSDXEiGyYZnK10PGWr'
 const TEST_VOICE_1 = 'C9AK6zDFrEtKcEaxUuxq'
 const TEST_VOICE_2 = 'HM3qBuoTewc24lzCcCvw'
 
-const _appendBuffer = function(bufferKaArray: ArrayBuffer[]) {
-  let temp = new Uint8Array(0)
-  for(let i = 0; i<bufferKaArray.length;i++)
-  {
-    temp = new Uint8Array(temp.byteLength + bufferKaArray[i].byteLength)
-  }
-  let pos = 0
-  for(let i = 0; i<bufferKaArray.length;i++)
-  {
-    temp.set(new Uint8Array(bufferKaArray[i],pos))
-    pos += bufferKaArray[i].byteLength
-  }
-  return temp.buffer;
-};
+// const _appendBuffer = function(bufferKaArray: ArrayBuffer[]) {
+//   let total_length = 0
+//   for(let i = 0; i<bufferKaArray.length;i++)
+//   {
+//     total_length += bufferKaArray[i].byteLength
+//   }
+//   const temp = new Uint8Array(total_length)
+//   temp.byteLength 
+//   let pos = 0
+//   for(let i = 0; i<bufferKaArray.length;i++)
+//   {
+//     temp.set(new Uint8Array(bufferKaArray[i],pos))
+//     console.log("👀👀👀 set")
+//     pos += bufferKaArray[i].byteLength
+//     console.log("new pos: " + String(pos))
+//     console.log(temp.byteLength)
+//   }
+//   return temp.buffer;
+// };
+
+function combineMultipleArrayBuffers(arrayOfBuffers: ArrayBuffer[]) {
+  // Calculate the total length of the combined buffer
+  const totalLength = arrayOfBuffers.reduce((acc, buffer) => acc + buffer.byteLength, 0);
+
+  // Create a new combined buffer with the total length
+  const combinedBuffer = new ArrayBuffer(totalLength);
+  const uint8Combined = new Uint8Array(combinedBuffer);
+
+  let offset = 0; // Track the offset in the combined buffer
+
+  // Loop through each buffer and copy its contents into the combined buffer
+  arrayOfBuffers.forEach((buffer) => {
+      const uint8Buffer = new Uint8Array(buffer);
+      uint8Combined.set(uint8Buffer, offset);
+      offset += buffer.byteLength; // Update the offset for the next buffer
+  });
+
+  return combinedBuffer;
+}
 
 export const useVoiceStore = defineStore('elevenLabsUtils', {
   state: () => ({
     response: new Uint8Array(0) as ArrayBuffer,
+    combinedResponseURL: '',
     responseURL: '',
     arrayBufferArr: [] as ArrayBuffer[],
   }),
 
   actions: {
-    async generateVoice(chat: Chat, istest?: boolean) {
+    async generateVoice(chat: Chat, istest: boolean = false) {
       const apiKey = XI_API_KEY
       let voiceID
-      if (chat.speaker == 'hayat') voiceID = TEST_VOICE_1
-      if (chat.speaker == 'yash') voiceID = TEST_VOICE_2
+      if (chat.speaker == 'hayat') voiceID = HAYAT_VOICE_ID
+      if (chat.speaker == 'yash') voiceID = YASH_VOICE_ID
       if (istest)
         chat.message =
           "आज का टॉपिक है tech और mental health; so मैं ही पहले start करता हु; so let's come to tech;"
@@ -58,12 +84,14 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
 
       // Sending the API request and waiting for response
       const apiResponse : AxiosResponse = await axios.request(apiRequestOptions).then(function (response) : AxiosResponse {
+        console.log("❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️")
         console.log("⚠️⚠️⚠️")
         console.log(response.data);
         console.log(response.status);
         console.log(response.statusText);
         console.log(response.headers);
         console.log(response.config);
+        console.log("❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️")
         return response
       });
       this.response = apiResponse.data
@@ -77,22 +105,11 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
       return this.responseURL
     },
     // return the combined url of audio file
-    getCombinedAudio() :string {
-      const audioBlob = new Blob([_appendBuffer(this.arrayBufferArr)], { type: 'audio/mpeg' })
-      return URL.createObjectURL(audioBlob)
-    },
-    async getModels() {
-      const apiRequestOptions: any = {
-        method: 'GET',
-        url: `https://api.elevenlabs.io/v1/models`,
-        headers: {
-          accept: 'audio/mpeg',
-          'content-type': 'application/json',
-          'xi-api-key': XI_API_KEY
-        }
-      }
-      const apiResponse = await axios.request(apiRequestOptions)
-      console.log(apiResponse.data)
+    getCombinedAudio() {
+      const audioBlob = new Blob([combineMultipleArrayBuffers(this.arrayBufferArr)], { type: 'audio/mpeg' })
+      console.log(audioBlob)
+      this.combinedResponseURL = URL.createObjectURL(audioBlob)
+      return this.combinedResponseURL
     }
   }
 })
