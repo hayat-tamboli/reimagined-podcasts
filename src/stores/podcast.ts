@@ -12,6 +12,7 @@ export const usePodcastStore = defineStore('PodcastStore', {
     topic: '',
     total_ping_pongs: 1,
     blobURLs: [] as string[],
+    arrayBufferArr: [] as ArrayBuffer[],
     messages: [] as Chats,
     chatComplete: false,
     voiceComplete: false,
@@ -21,10 +22,8 @@ export const usePodcastStore = defineStore('PodcastStore', {
   }),
   actions: {
     checkVoiceCompletion() {
-      console.log('checking voice completion')
       if (this.blobURLs.length == this.messages.length) {
         for (let i = 0; i < this.messages.length; i++) {
-          console.log(this.blobURLs[i])
           if (this.blobURLs[i] == null) {
             break
           }
@@ -32,10 +31,8 @@ export const usePodcastStore = defineStore('PodcastStore', {
             if (!this.chatComplete) {
               return
             }
-            console.log('voice is all loaded now')
             const voiceStore = useVoiceStore()
-            this.completePodcastURI = voiceStore.getCombinedAudio()
-            console.log(this.completePodcastURI)
+            this.completePodcastURI = voiceStore.getCombinedAudio(this.arrayBufferArr)
             this.voiceComplete = true
           }
         }
@@ -44,8 +41,8 @@ export const usePodcastStore = defineStore('PodcastStore', {
     createSeperateVoice(speaker: Voice, message: string, index: number) {
       const voiceStore = useVoiceStore()
       voiceStore.generateVoice({ speaker: speaker, message: message }).then((url) => {
-        this.blobURLs[index] = url
-        console.log(url + 'added to position ' + String(index))
+        this.blobURLs[index] = url.responseurl
+        this.arrayBufferArr[index] = url.arraybuffer
         this.checkVoiceCompletion()
       })
     },
@@ -67,6 +64,7 @@ export const usePodcastStore = defineStore('PodcastStore', {
           this.createSeperateVoice('yash', res, i*2 +1)
         })
       }
+      openAIStore.endPodcastByHayat()
       console.info('Text Content completed')
       console.table(this.messages)
       this.checkVoiceCompletion()
@@ -76,7 +74,7 @@ export const usePodcastStore = defineStore('PodcastStore', {
       const voiceStore = useVoiceStore()
       for (let i = 0; i < this.messages.length; i++) {
         await voiceStore.generateVoice(this.messages[i]).then((url) => {
-          this.blobURLs[i] = url
+          this.blobURLs[i] = url.responseurl
         })
       }
       this.checkVoiceCompletion()

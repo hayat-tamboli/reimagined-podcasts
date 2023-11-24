@@ -12,8 +12,9 @@ const podcastStore = usePodcastStore()
 let introVideo = ref<any>(null)
 let introVideoELement = introVideo.value
 let voiceC = ref(podcastStore.voiceComplete)
-watch(voiceC, ()=>{
+watch(()=>voiceC,()=>{
   console.log("woa this works, video can start from now")
+  console.log(voiceC.value)
   PlayVideo()
 })
 

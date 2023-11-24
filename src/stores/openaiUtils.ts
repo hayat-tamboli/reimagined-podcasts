@@ -7,6 +7,7 @@ const HAYAT_FINETUNED_MODEL = 'ft:gpt-3.5-turbo-1106:hayat::8Kmv9FCf'
 const YASH_FINETUNED_MODEL = 'ft:gpt-3.5-turbo-1106:hayat::8KpEL3vk'
 const GPT35 = 'gpt-3.5-turbo'
 const stopSequence = ['क्या केहना है आपका ?', "क्या राय है आपकी?", "क्या सोचा इसके बारे में?"]
+// const MAX_TOKENS = 10
 const MAX_TOKENS = 256
 
 const openai = new OpenAI({
@@ -67,6 +68,11 @@ export const useAIStore = defineStore('openAIInternal', {
       this.hayatContext.push({role: 'user', content: this.response})
       this.yashContext.push({role: 'assistant', content: this.response})
       return this.response
-    }
+    },
+    async endPodcastByHayat(){
+      this.hayatContext.push(this.hayat_system_content)
+      this.hayatContext.push({role: 'system', content: `End this podcast by speaking some concluding lines`})
+      return await this.hayatSpitsText()
+  },
   }
 })
