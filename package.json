@@ -1,6 +1,6 @@
 {
-  "name": "ai-podcaster",
-  "version": "0.0.0",
+  "name": "aironicals",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "dev": "vite",

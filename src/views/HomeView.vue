@@ -35,10 +35,10 @@ function reload(){
       v-show="!podcastStore.chatComplete"
     />
     <ChatBox :podcastStore="podcastStore" />
-    <!-- <video class="z-50 w-full h-full absolute top-0 left-0 object-cover" ref="introVideo" v-show="podcastStore.voiceComplete">
+    <video class="z-50 w-full h-full absolute top-0 left-0 object-cover" ref="introVideo" v-show="podcastStore.voiceComplete">
       <source src="../assets/intro-vid.mp4" type="video/mp4"/>
       Your browser does not support the video tag.
-    </video> -->
+    </video> 
     <div>
       <Transition name="fromRight">
         <CharectorAnim

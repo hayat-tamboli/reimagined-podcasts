@@ -5,8 +5,8 @@ import { defineStore } from 'pinia'
 const XI_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY
 const HAYAT_VOICE_ID = 'Mdp8P6fvVv8ZHDGdZ7cN'
 const YASH_VOICE_ID = 'MiWSDXEiGyYZnK10PGWr'
-const TEST_VOICE_1 = 'C9AK6zDFrEtKcEaxUuxq'
-const TEST_VOICE_2 = 'HM3qBuoTewc24lzCcCvw'
+// const TEST_VOICE_1 = 'C9AK6zDFrEtKcEaxUuxq'
+// const TEST_VOICE_2 = 'HM3qBuoTewc24lzCcCvw'
 
 function combineMultipleArrayBuffers(arrayOfBuffers: ArrayBuffer[]) {
   // Calculate the total length of the combined buffer
@@ -31,7 +31,6 @@ function combineMultipleArrayBuffers(arrayOfBuffers: ArrayBuffer[]) {
 export const useVoiceStore = defineStore('elevenLabsUtils', {
   state: () => ({
     response: new Uint8Array(0) as ArrayBuffer,
-    combinedResponseURL: '',
     responseURL: '',
   }),
 
@@ -85,8 +84,8 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
     getCombinedAudio(arrayBufferArr : ArrayBuffer[]) {
       const audioBlob = new Blob([combineMultipleArrayBuffers(arrayBufferArr)], { type: 'audio/mpeg' })
       console.log(audioBlob)
-      this.combinedResponseURL = URL.createObjectURL(audioBlob)
-      return this.combinedResponseURL
+      const combinedResponseURL = URL.createObjectURL(audioBlob)
+      return combinedResponseURL
     }
   }
 })
