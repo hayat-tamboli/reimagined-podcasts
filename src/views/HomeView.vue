@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import TopicForm from '@/components/TopicForm.vue'
 import tableSVG from '@/assets/table.svg'
 import yashComputer from '@/assets/yash/yash-laptop.svg'
@@ -9,21 +8,7 @@ import ChatBox from '@/components/ChatBox.vue'
 import AudioPlayer from '@/components/audioPlayer.vue'
 import { usePodcastStore } from '@/stores/podcast'
 const podcastStore = usePodcastStore()
-let introVideo = ref<any>(null)
-let introVideoELement = introVideo.value
-let voiceC = ref(podcastStore.voiceComplete)
-watch(()=>voiceC,()=>{
-  console.log("woa this works, video can start from now")
-  console.log(voiceC.value)
-  PlayVideo()
-})
-
-function PlayVideo() {
-  if (introVideoELement) {
-    introVideoELement.play()
-  }
-}
-function reload(){
+function reload() {
   history.go()
 }
 </script>
@@ -35,10 +20,6 @@ function reload(){
       v-show="!podcastStore.chatComplete"
     />
     <ChatBox :podcastStore="podcastStore" />
-    <video class="z-50 w-full h-full absolute top-0 left-0 object-cover" ref="introVideo" v-show="podcastStore.voiceComplete">
-      <source src="../assets/intro-vid.mp4" type="video/mp4"/>
-      Your browser does not support the video tag.
-    </video> 
     <div>
       <Transition name="fromRight">
         <CharectorAnim
@@ -85,9 +66,18 @@ function reload(){
           <p class="p-4">
             Topic of discussion: <b>{{ podcastStore.topic }}</b>
           </p>
-          <button type="button" class="rounded-full p-2 hover:bg-slate-600 hover:text-white " @click="reload">
-      <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-6"> <path d="M18 2h-2v2h-2v2h-2v2h-2v2H8v2H6v2H4v2H2v6h6v-2h2v-2h2v-2h2v-2h2v-2h2v-2h2V8h2V6h-2V4h-2V2zm0 8h-2v2h-2v2h-2v2h-2v2H8v-2H6v-2h2v-2h2v-2h2V8h2V6h2v2h2v2zM6 16H4v4h4v-2H6v-2z" fill="currentColor"/> </svg>
-    </button>
+          <button
+            type="button"
+            class="rounded-full p-2 hover:bg-slate-600 hover:text-white"
+            @click="reload"
+          >
+            <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-6">
+              <path
+                d="M18 2h-2v2h-2v2h-2v2h-2v2H8v2H6v2H4v2H2v6h6v-2h2v-2h2v-2h2v-2h2v-2h2v-2h2V8h2V6h-2V4h-2V2zm0 8h-2v2h-2v2h-2v2h-2v2H8v-2H6v-2h2v-2h2v-2h2V8h2V6h2v2h2v2zM6 16H4v4h4v-2H6v-2z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
         </div>
         <div v-if="!podcastStore.voiceComplete" class="flex justify-center items-center text-3xl">
           <div role="status" class="p-2">

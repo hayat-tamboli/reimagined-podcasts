@@ -15,13 +15,13 @@ export default defineComponent({
     animation: String
   },
   watch: {
-    animation: function(){
+    animation: function () {
       new Rive({
-      canvas: this.$refs.canvas as any,
-      src: this.$props.src,
-      autoplay: true,
-      animations: this.$props.animation
-    })
+        canvas: this.$refs.canvas as any,
+        src: this.$props.src,
+        autoplay: true,
+        animations: this.$props.animation
+      })
     }
   },
   mounted() {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { usePodcastStore } from '@/stores/podcast'
+import router from '@/router'
 const podcastStore = usePodcastStore()
 let topic = ref('')
 let btnLoading = ref(false)
@@ -14,6 +15,7 @@ function submitTopic(topic: string) {
   podcastStore.generateTextContent(isTest.value).then(() => {
     podcastStore.chatComplete = true
     btnLoading.value = false
+    router.push('/intro')
   })
 }
 </script>
@@ -27,7 +29,7 @@ function submitTopic(topic: string) {
             class="text-xl placeholder:text-xl"
             v-model="topic"
             placeholder="Topic for the podcast"
-            :required = !isTest
+            :required="!isTest"
           />
           <it-button
             class="mt-6 text-xl"

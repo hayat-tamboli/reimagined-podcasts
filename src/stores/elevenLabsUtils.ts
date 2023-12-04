@@ -10,28 +10,28 @@ const YASH_VOICE_ID = 'MiWSDXEiGyYZnK10PGWr'
 
 function combineMultipleArrayBuffers(arrayOfBuffers: ArrayBuffer[]) {
   // Calculate the total length of the combined buffer
-  const totalLength = arrayOfBuffers.reduce((acc, buffer) => acc + buffer.byteLength, 0);
+  const totalLength = arrayOfBuffers.reduce((acc, buffer) => acc + buffer.byteLength, 0)
 
   // Create a new combined buffer with the total length
-  const combinedBuffer = new ArrayBuffer(totalLength);
-  const uint8Combined = new Uint8Array(combinedBuffer);
+  const combinedBuffer = new ArrayBuffer(totalLength)
+  const uint8Combined = new Uint8Array(combinedBuffer)
 
-  let offset = 0; // Track the offset in the combined buffer
+  let offset = 0 // Track the offset in the combined buffer
 
   // Loop through each buffer and copy its contents into the combined buffer
   arrayOfBuffers.forEach((buffer) => {
-      const uint8Buffer = new Uint8Array(buffer);
-      uint8Combined.set(uint8Buffer, offset);
-      offset += buffer.byteLength; // Update the offset for the next buffer
-  });
+    const uint8Buffer = new Uint8Array(buffer)
+    uint8Combined.set(uint8Buffer, offset)
+    offset += buffer.byteLength // Update the offset for the next buffer
+  })
 
-  return combinedBuffer;
+  return combinedBuffer
 }
 
 export const useVoiceStore = defineStore('elevenLabsUtils', {
   state: () => ({
     response: new Uint8Array(0) as ArrayBuffer,
-    responseURL: '',
+    responseURL: ''
   }),
 
   actions: {
@@ -60,29 +60,33 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
       }
 
       // Sending the API request and waiting for response
-      const apiResponse : AxiosResponse = await axios.request(apiRequestOptions).then(function (response) : AxiosResponse {
-        // console.log("❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️")
-        // console.log("⚠️⚠️⚠️")
-        // console.log(response.data);
-        // console.log(response.status);
-        // console.log(response.statusText);
-        // console.log(response.headers);
-        // console.log(response.config);
-        // console.log("❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️")
-        return response
-      });
+      const apiResponse: AxiosResponse = await axios
+        .request(apiRequestOptions)
+        .then(function (response): AxiosResponse {
+          // console.log("❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️")
+          // console.log("⚠️⚠️⚠️")
+          // console.log(response.data);
+          // console.log(response.status);
+          // console.log(response.statusText);
+          // console.log(response.headers);
+          // console.log(response.config);
+          // console.log("❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️")
+          return response
+        })
       this.response = apiResponse.data
       const audioBlob = new Blob([this.response], { type: 'audio/mpeg' })
       // Create a URL for the audio blob
       this.responseURL = URL.createObjectURL(audioBlob)
       return {
-        'responseurl': this.responseURL,
-        'arraybuffer': this.response
+        responseurl: this.responseURL,
+        arraybuffer: this.response
       }
     },
     // return the combined url of audio file
-    getCombinedAudio(arrayBufferArr : ArrayBuffer[]) {
-      const audioBlob = new Blob([combineMultipleArrayBuffers(arrayBufferArr)], { type: 'audio/mpeg' })
+    getCombinedAudio(arrayBufferArr: ArrayBuffer[]) {
+      const audioBlob = new Blob([combineMultipleArrayBuffers(arrayBufferArr)], {
+        type: 'audio/mpeg'
+      })
       console.log(audioBlob)
       const combinedResponseURL = URL.createObjectURL(audioBlob)
       return combinedResponseURL

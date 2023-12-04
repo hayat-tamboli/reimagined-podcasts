@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { useVoiceStore } from '@/stores/elevenLabsUtils'
 import { useAIStore } from '@/stores/openaiUtils'
 import type { Chats } from '@/models/chat'
-import type { Voice } from "@/models/speaker";
+import type { Voice } from '@/models/speaker'
 
 type Animation = 'idle' | 'speaking'
 
@@ -27,24 +27,24 @@ export const usePodcastStore = defineStore('PodcastStore', {
       }
       // start podcast
       openAIStore.startPodcastByHayat(this.topic)
-      
+
       // main conversation
       for (let i = 0; i < this.total_ping_pongs; i++) {
         await openAIStore.hayatSpitsText().then((res) => {
           this.messages.push({ speaker: 'hayat', message: res })
-          this.createSeperateVoice('hayat', res, i*2)
+          this.createSeperateVoice('hayat', res, i * 2)
         })
         // --------------------------------
         await openAIStore.yashSpitsText().then((res) => {
           this.messages.push({ speaker: 'yash', message: res })
-          this.createSeperateVoice('yash', res, i*2 +1)
+          this.createSeperateVoice('yash', res, i * 2 + 1)
         })
       }
       // end of podcast
       openAIStore.endPodcastByHayat()
       await openAIStore.hayatSpitsText().then((res) => {
         this.messages.push({ speaker: 'hayat', message: res })
-        this.createSeperateVoice('hayat', res, this.total_ping_pongs*2)
+        this.createSeperateVoice('hayat', res, this.total_ping_pongs * 2)
       })
       console.table(this.messages)
       this.checkVoiceCompletion()
@@ -74,15 +74,13 @@ export const usePodcastStore = defineStore('PodcastStore', {
             this.voiceComplete = true
           }
         }
-      }
-      else
-      {
+      } else {
         return
       }
     },
-    /**  
-    * @deprecated generateFullVoiceContent method is not used for speed and optimization reasons   
-    */ 
+    /**
+     * @deprecated generateFullVoiceContent method is not used for speed and optimization reasons
+     */
     async generateFullVoiceContent() {
       const voiceStore = useVoiceStore()
       for (let i = 0; i < this.messages.length; i++) {
