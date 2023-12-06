@@ -6,8 +6,11 @@ import hayatComputer from '@/assets/hayat/hayat-laptop.svg'
 import CharectorAnim from '@/components/CharectorAnim.vue'
 import ChatBox from '@/components/ChatBox.vue'
 import AudioPlayer from '@/components/audioPlayer.vue'
+import passwordForm from '@/components/passwordForm.vue'
 import { usePodcastStore } from '@/stores/podcast'
+import { useAccessControlStore } from '@/stores/accessControl'
 const podcastStore = usePodcastStore()
+const accessControlStore = useAccessControlStore()
 function reload() {
   history.go()
 }
@@ -15,9 +18,13 @@ function reload() {
 
 <template>
   <main class="flex flex-col justify-center items-center h-screen overflow-clip" id="bg">
+    <passwordForm
+      class="w-2/5 z-20 bg-slate-200 p-2 rounded-md shadow-xl"
+      v-show="!accessControlStore.isAuthorized"
+    />
     <TopicForm
       class="w-2/5 z-20 bg-slate-200 p-2 rounded-md shadow-xl"
-      v-show="!podcastStore.chatComplete"
+      v-show="!podcastStore.chatComplete && accessControlStore.isAuthorized"
     />
     <ChatBox :podcastStore="podcastStore" />
     <div>

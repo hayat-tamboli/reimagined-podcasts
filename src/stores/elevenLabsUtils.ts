@@ -1,8 +1,10 @@
 import type { Chat } from '@/models/chat'
 import axios, { type AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
+import { useAccessControlStore } from './accessControl'
 
-const XI_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY
+
+
 const HAYAT_VOICE_ID = 'Mdp8P6fvVv8ZHDGdZ7cN'
 const YASH_VOICE_ID = 'MiWSDXEiGyYZnK10PGWr'
 // const TEST_VOICE_1 = 'C9AK6zDFrEtKcEaxUuxq'
@@ -50,7 +52,7 @@ export const useVoiceStore = defineStore('elevenLabsUtils', {
         headers: {
           accept: 'audio/mpeg',
           'content-type': 'application/json',
-          'xi-api-key': XI_API_KEY
+          'xi-api-key': useAccessControlStore().elevenLabsAPIKey
         },
         data: {
           text: chat.message,
