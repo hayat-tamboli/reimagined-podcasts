@@ -18,14 +18,12 @@ function reload() {
 
 <template>
   <main class="flex flex-col justify-center items-center h-screen overflow-clip" id="bg">
-    <passwordForm
-      class="w-2/5 z-20 bg-slate-200 p-2 rounded-md shadow-xl"
-      v-show="!accessControlStore.isAuthorized"
-    />
-    <TopicForm
-      class="w-2/5 z-20 bg-slate-200 p-2 rounded-md shadow-xl"
-      v-show="!podcastStore.chatComplete && accessControlStore.isAuthorized"
-    />
+    <div class="w-2/5 h-40 z-20 bg-slate-200 p-2 rounded-md shadow-xl" v-show="!accessControlStore.isAuthorized || !podcastStore.chatComplete">
+      <TransitionGroup name="carousel">
+        <passwordForm v-show="!accessControlStore.isAuthorized" />
+        <TopicForm v-show="accessControlStore.isAuthorized" />
+      </TransitionGroup>
+    </div>
     <ChatBox :podcastStore="podcastStore" />
     <div>
       <Transition name="fromRight">
@@ -33,7 +31,7 @@ function reload() {
           src="hayat_animation.riv"
           class="w-72 absolute right-32 bottom-48 z-0"
           :animation="podcastStore.hayatAnim"
-          v-show="podcastStore.chatComplete"
+          v-show="accessControlStore.isAuthorized"
         />
       </Transition>
 
@@ -42,7 +40,7 @@ function reload() {
           src="yash_animation.riv"
           class="w-72 absolute left-32 bottom-48 z-0"
           :animation="podcastStore.yashAnim"
-          v-show="podcastStore.chatComplete"
+          v-show="accessControlStore.isAuthorized"
         />
       </Transition>
       <Transition name="fromLeft">
@@ -50,7 +48,7 @@ function reload() {
           :src="yashComputer"
           alt=""
           class="w-72 absolute left-80 bottom-40 z-10"
-          v-show="podcastStore.chatComplete"
+          v-show="accessControlStore.isAuthorized"
         />
       </Transition>
       <Transition name="fromRight">
@@ -58,7 +56,7 @@ function reload() {
           :src="hayatComputer"
           alt=""
           class="w-72 absolute right-80 bottom-36 z-10"
-          v-show="podcastStore.chatComplete"
+          v-show="accessControlStore.isAuthorized"
         />
       </Transition>
       <img :src="tableSVG" alt="" class="w-screen absolute z-0 bottom-0 left-0" />
@@ -143,6 +141,16 @@ function reload() {
   opacity: 0;
   left: 0;
 }
+
+.carousel-enter-active,
+.carousel-leave-active {
+  transition: all 0.5s linear;
+}
+.carousel-enter-from,
+.carousel-leave-to {
+  opacity: 0;
+}
+
 .fromRight-enter-active,
 .fromRight-leave-active {
   transition: all 0.5s ease;
