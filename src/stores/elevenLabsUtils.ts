@@ -3,10 +3,8 @@ import axios, { type AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
 import { useAccessControlStore } from './accessControl'
 
-
-
-const HAYAT_VOICE_ID = 'Mdp8P6fvVv8ZHDGdZ7cN'
-const YASH_VOICE_ID = 'MiWSDXEiGyYZnK10PGWr'
+const HAYAT_VOICE_ID = '2WWfkCAM5iPXFUZIkThb'
+const YASH_VOICE_ID = 'ecNbgYOckYI8JER9009p'
 // const TEST_VOICE_1 = 'C9AK6zDFrEtKcEaxUuxq'
 // const TEST_VOICE_2 = 'HM3qBuoTewc24lzCcCvw'
 
