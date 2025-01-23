@@ -122,15 +122,7 @@ function reload() {
   background-image: url('../assets/bg.png');
   background-size: cover;
 }
-/* #main-chat-box::-webkit-scrollbar {
-  display: none;
-}
-#main-chat-box {
-  -ms-overflow-style: none; 
-  scrollbar-width: none;  
-} 
 
-*/
 .fromLeft-enter-active,
 .fromLeft-leave-active {
   transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
